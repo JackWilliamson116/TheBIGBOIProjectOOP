@@ -2,11 +2,12 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include "Circuit.h"
 
 using namespace std;
 
 int main() {
-
+	circuit c();
 	string fileName;							//A string that stores the filename that the user wants to open
 	cout << "Enter the circuit file name: ";
 	cin >> fileName;							//Takes what the user inputs and setes it to the string fileName
@@ -48,7 +49,9 @@ int main() {
 		if (thingToMake != string::npos)							//If the current line has the keyword INPUT, do this
 		{
 			cout << "INPUT DETECTED" << endl;
-
+			//call the function that checks if the wire exists "doesNotExist()"
+			//create a wire with wire number, there is already a default wirestate
+			//add the wire to the map using "insertWire(char c, wire* w1)" char is the character name
 
 
 		}
@@ -57,6 +60,9 @@ int main() {
 		if (thingToMake != string::npos)
 		{
 			cout << "OUTPUT DETECTED" << endl;
+			//call the function that checks if the wire exists "doesNotExist()"
+			//create a wire with wire number, there is already a default wirestate
+			//add the wire to the map using "insertWire(char c, wire* w1)" char is the character name
 		}
 
 		thingToMake = (fileContents.at(i)).find("AND");			//If the current line has the keyword AND (AND gate, NAND gate), do this
@@ -65,12 +71,14 @@ int main() {
 			if ((fileContents.at(i)).at(0) == 'N')			//NAND gate
 			{
 				cout << "NAND DETECTED" << endl;
+				//create the gate "gate(getwire(int), getwire(int), getwire(), int delay, gateType NAND)"
+				//wire.setGate()
 			}
 			else											//AND gate 
 			{
 				cout << "AND DETECTED" << endl;
 			}
-			
+
 		}
 
 		thingToMake = (fileContents.at(i)).find("OR");			//If the current line has the keyword OR (OR gate, NOR gate, XOR gate, XNOR gate), do this
