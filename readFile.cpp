@@ -48,6 +48,9 @@ int main() {
 		if (thingToMake != string::npos)							//If the current line has the keyword INPUT, do this
 		{
 			cout << "INPUT DETECTED" << endl;
+
+
+
 		}
 
 		thingToMake = (fileContents.at(i)).find("OUTPUT");			//If the current line has the keyword OUTPUT, do this
@@ -59,13 +62,42 @@ int main() {
 		thingToMake = (fileContents.at(i)).find("AND");			//If the current line has the keyword AND (AND gate, NAND gate), do this
 		if (thingToMake != string::npos)
 		{
-			cout << "AND (or something) DETECTED" << endl;
+			if ((fileContents.at(i)).at(0) == 'N')			//NAND gate
+			{
+				cout << "NAND DETECTED" << endl;
+			}
+			else											//AND gate 
+			{
+				cout << "AND DETECTED" << endl;
+			}
+			
 		}
 
 		thingToMake = (fileContents.at(i)).find("OR");			//If the current line has the keyword OR (OR gate, NOR gate, XOR gate, XNOR gate), do this
 		if (thingToMake != string::npos)
 		{
-			cout << "OR (or something) DETECTED" << endl;
+			if ((fileContents.at(i)).at(0) == 'X')			//XOR or XNOR gate
+			{
+				if ((fileContents.at(i)).at(1) == 'N')			//XNOR gate
+				{
+					cout << "XNOR DETECTED" << endl;
+				}
+				else											//XOR gate 
+				{
+					cout << "XOR DETECTED" << endl;
+				}
+			}
+			else											//AND gate 
+			{
+				if ((fileContents.at(i)).at(0) == 'N')			//NOR gate
+				{
+					cout << "NOR DETECTED" << endl;
+				}
+				else											//OR gate 
+				{
+					cout << "OR DETECTED" << endl;
+				}
+			}
 		}
 
 		thingToMake = (fileContents.at(i)).find("NOT");			//If the current line has the keyword NOT, do this
@@ -80,6 +112,10 @@ int main() {
 			cout << "INVERT DETECTED" << endl;
 		}
 	}
+	//At this point, all wire and gate objects should have been created.
+
+
+
 	return 0;
 
 
