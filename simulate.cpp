@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <sstream>
 
 using namespace std;
 
@@ -154,8 +155,16 @@ int main() {
 
 			wireName = (vectorContents.at(i)).at(6);
 
-			cout << "The wire name in the vector file is " << wireName << endl;
+			state = (vectorContents.at(i)).at((vectorContents.at(i)).size() - 1);						//This little bundle of confusion gets the last character in the line to determine the wire state.
+
+			string timeAndStateString = (vectorContents.at(i)).substr(8, 2);							//We are creating a string that contains only the time portion of the original string.
+
+			stringstream theTimeStringStream(timeAndStateString);										//Create a stringstream object that will turn the time string into an int
+
+			theTimeStringStream >> wireTime;															//Put whatever is stored in the stringstream into the int
+
+			//At this point, we have everything we need from each line of the vector file. We just need to make the gates and add them to however we are going to add them.
 		}
 	}
-	return 0;
+		return 0;
 }
