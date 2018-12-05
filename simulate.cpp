@@ -115,9 +115,47 @@ int main() {
 
 
 
-	//Vector
+	ifstream vectorStream(fileName.substr(0, (fileName.length() - 4)) + "_v.txt");				//Creates an ifstream called vectorStream.
+	vector<string> vectorContents;				//A vector that will hold each line of the text file
+	while (vectorStream.good())					//While we are not at the end of the file...
+	{
+		string tempstring = "";					//A temporary string that holds that line of the file
+		getline(vectorStream, tempstring);		//Get the current line of the file and put it into the temporary variable
+		vectorContents.push_back(tempstring);		//Add the temporary string to the array
+	}
+	vectorStream.close();							//Close the file
 
+
+	
+	if (vectorContents.size() == 0)				//Check if the file actually exists. This prevents crashes.
+	{
+		cerr << "Not a valid vector file! Check the name? It should be " << fileName.substr(0, (fileName.length() - 4)) + "_v.txt" << endl;
+		return -1;
+	}
+	else										//Only using an else statement here to make sure fileValidTest goes out of scope
+	{
+		size_t fileValidTest = (vectorContents.at(0)).find("VECTOR");	//Look for the word "VECTOR" in the first line of the file to check for validity
+		if (fileValidTest == string::npos)								//Was the word found? If not run this
+		{
+			cerr << "Not a valid vector file!" << endl;
+			return 1;
+		}
+	}
+	//At this point, the file has been confirmed as valid
+
+
+	for (int i = 1; i < vectorContents.size(); i++)						//Go through each line of the circuit file, starting at 1
+	{
+		if ((vectorContents.at(i)).size() != 0)							//We need to ignore the blank lines that were so painfully put in
+		{
+			char wireName;
+			int wireTime;
+			char state;
+
+			wireName = (vectorContents.at(i)).at(6);
+
+			cout << "The wire name in the vector file is " << wireName << endl;
+		}
+	}
 	return 0;
-
-
 }
