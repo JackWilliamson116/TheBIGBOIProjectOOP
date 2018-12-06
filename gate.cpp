@@ -1,4 +1,5 @@
 #include "gate.h"
+#include "wire.h"
 
 wireValue gate::eval() {
 	switch (type) {
@@ -16,7 +17,7 @@ wireValue gate::eval() {
 			}
 		case NAND:
 			if (in1->getState() == in2->getState()) {
-				if (in1->getState() = unknown) {
+				if (in1->getState() == unknown) {
 					return unknown;
 				}
 				if (in1->getState() == high) {
@@ -26,7 +27,7 @@ wireValue gate::eval() {
 			return high;
 		case OR:
 			if (in1->getState() == in2->getState()) {
-				if (in1->getState() = unknown) {
+				if (in1->getState() == unknown) {
 					return unknown;
 				}
 				if (in1->getState() == low) {
