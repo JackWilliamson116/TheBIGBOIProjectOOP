@@ -554,17 +554,58 @@ int main() {
 	//At this point, the file has been confirmed as valid
 
 
-	for (int i = 1; i < vectorContents.size(); i++)						//Go through each line of the circuit file, starting at 1
+	for (int i = 1; i < vectorContents.size(); i++)						//Go through each line of the vector file, starting at 1
 	{
 		if ((vectorContents.at(i)).size() != 0)									//We need to ignore the blank lines that were so painfully put in
 		{
 			cout << "Iteration number is " << i << endl;
 
-			char wireName;
-			int wireTime;
-			char state;
+			//wireName = (vectorContents.at(i)).at(6);
+			string temporaryWorkingString = fileContents.at(i);
 
-			wireName = (vectorContents.at(i)).at(6);
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) != ' '))					//We dont care about the gate type for this part. Ignore it.
+			{
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) == ' '))
+			{
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);							//Remove those extra spaces after whatever the first word was.
+			}
+
+			string wireName = "";
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) != ' '))
+			{
+				wireName = wireName + temporaryWorkingString.at(0);
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//At this point, we have stored the name of the wire (which we assume is the thing after the word "input") into its own string.
+
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) == ' '))
+			{
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);							//Remove those extra spaces
+			}
+
+			string timeStringTemp = "";
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) != ' '))
+			{
+				timeStringTemp = timeStringTemp + temporaryWorkingString.at(0);
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//At this point, we have stored the wire number into a string
+
+			int wireTime;
+			stringstream timeStringStringStream(timeStringTemp);
+			timeStringStringStream >> wireTime;
+
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) == ' '))
+			{
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);							//Remove those extra spaces
+			}
+
+			char state = temporaryWorkingString.at(0);
+
+			
 
 			state = (vectorContents.at(i)).at((vectorContents.at(i)).size() - 1);					//This little bundle of confusion gets the last character in the line to determine the wire state.
 
@@ -578,7 +619,7 @@ int main() {
 
 			cout << "The wireTimeValue is " << wireTime << endl;
 			
-			c.makeEvent(c.getWire(wireName), wireTime, c.setWireValue(state));		//here						//At this point, we have everything we need from each line of the vector file. We just need to make the gates and add them to however we are going to add them.
+			//c.makeEvent(c.getWire(wireName), wireTime, c.setWireValue(state));		//here						//At this point, we have everything we need from each line of the vector file. We just need to make the gates and add them to however we are going to add them.
 
 			cout << "event added" << endl;
 		}
