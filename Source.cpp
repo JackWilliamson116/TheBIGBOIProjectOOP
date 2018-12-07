@@ -16,7 +16,7 @@ using namespace std;
 int main() {
 
 	circuit c;
-	priority_queue<event> q;
+	//priority_queue<event> q;
 	//q.push(NULL);
 	string fileName;												//A string that stores the filename that the user wants to open
 	cout << "Enter the circuit file name: ";
@@ -60,57 +60,166 @@ int main() {
 		{
 			cout << "INPUT DETECTED" << endl;
 
-			stringstream theTimeStringStream((fileContents.at(i)).substr(9, string::npos));										//Create a stringstream object that will turn the time string into an int
+			string temporaryWorkingString = (fileContents.at(i)).substr(5, string::npos);		//A string that contains everything but the begining word, input
+
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) == ' '))
+			{
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//At this point, we have removed all of the random spacing and should have the name for our wire at the beginging of temporaryWorkingString.
+			
+			string nameOfTheWire = "";
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) != ' '))
+			{
+				nameOfTheWire = nameOfTheWire + temporaryWorkingString.at(0);
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//At this point, we have stored the name of the wire (which we assume is the thing after the word "input") into its own string.
+
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) == ' '))
+			{
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//At this point, we have removed all of the random spacing and should have only the wire number remaining.
+
+			stringstream wireNumberStringStream(temporaryWorkingString);
 			int tempWireNum;
-			theTimeStringStream >> tempWireNum;
+			wireNumberStringStream >> tempWireNum;
 
-			char wireCharacter = (fileContents.at(i)).at(8);		//Grab the name of the wire
-
-			cout << "Info(IN): " << wireCharacter << " " << tempWireNum;
-
-			if (c.doesNotExist(tempWireNum))										//if the wire does not already exist
+			//JACK - wirecharacter is now a string...
+			/*if (c.doesNotExist(tempWireNum))										//if the wire does not already exist
 			{
 				wire* w = new wire(tempWireNum);									//create the wire
 				cout << tempWireNum << " wire created " << wireCharacter << endl;
 				c.insertWire(wireCharacter, w);										//then add it to the map
 				cout << "wire added to map " << endl;
-			}
+			}*/
 
 		}
 
 		thingToMake = (fileContents.at(i)).find("OUTPUT");			//If the current line has the keyword OUTPUT, do this
 		if (thingToMake != string::npos)
 		{
-			cout << "OUTPUT DETECTED" << endl;
+			string temporaryWorkingString = (fileContents.at(i)).substr(6, string::npos);		//A string that contains everything but the begining word, output
 
-			stringstream theTimeStringStream((fileContents.at(i)).substr(9, string::npos));										//Create a stringstream object that will turn the time string into an int
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) == ' '))
+			{
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//At this point, we have removed all of the random spacing and should have the name for our wire at the beginging of temporaryWorkingString.
+
+			string nameOfTheWire = "";
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) != ' '))
+			{
+				nameOfTheWire = nameOfTheWire + temporaryWorkingString.at(0);
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//At this point, we have stored the name of the wire (which we assume is the thing after the word "input") into its own string.
+
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) == ' '))
+			{
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//At this point, we have removed all of the random spacing and should have only the wire number remaining.
+
+			stringstream wireNumberStringStream(temporaryWorkingString);
 			int tempWireNum;
-			theTimeStringStream >> tempWireNum;
+			wireNumberStringStream >> tempWireNum;
 
-			char wireCharacter = (fileContents.at(i)).at(8);				//Grab the name of the wire
-
-			cout << "Info(OUT): " << wireCharacter << " " << tempWireNum;
-
-			if (c.doesNotExist(tempWireNum)) {
+			//JACK - wirecharacter is now a string...
+			/*if (c.doesNotExist(tempWireNum)) {
 				wire* w = new wire(tempWireNum);
 				cout << tempWireNum << " wire created" << wireCharacter << endl;
 				c.insertWire(wireCharacter, w);
 				cout << "wire added to map" << endl;
-			}
+			}*/
 
 		}
 
 		thingToMake = (fileContents.at(i)).find("AND");			//If the current line has the keyword AND (AND gate, NAND gate), do this
 		if (thingToMake != string::npos)
 		{
-			string tempString = (fileContents.at(i)).substr(6, 7);					//Holds the part of the line that says the amount of time the delay should last for
-			int delayTime;
-			stringstream delayTimeStringStream(tempString);
-			delayTimeStringStream >> delayTime;
+			string temporaryWorkingString = (fileContents.at(i)).substr(4, string::npos);
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) == ' '))
+			{
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//At this point, we have removed all of the random spacing.
 
-			int firstWire = atoi(&(fileContents.at(i)).at(13));						//Grab the first wire's number
-			int secondWire = atoi(&(fileContents.at(i)).at(17));					//Grab the second wire's number
-			int thirdWire = atoi(&(fileContents.at(i)).at(21));						//Grab the third wire's number
+			string gateDelayTimeString = "";
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) != ' '))
+			{
+				gateDelayTimeString = gateDelayTimeString + temporaryWorkingString.at(0);
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//The string gateDelayTimeString at this point should be holding the time + the letters "ns"
+
+			stringstream delayTimeStringStream(gateDelayTimeString);
+
+			int delayTime;
+			delayTimeStringStream >> delayTime;							//We have taken the delayTime
+
+
+			//Get the first number
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) == ' '))
+			{
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//At this point, we have removed all of the random spacing and should have only the wire numbers remaining.
+
+			string theWireNumberString = "";
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) != ' '))
+			{
+				theWireNumberString = theWireNumberString + temporaryWorkingString.at(0);
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//Put the full wire number into a string called theWireNumberString
+
+			int firstWire;
+			stringstream theFirstWireStringStream(theWireNumberString);
+			theFirstWireStringStream >> firstWire;								//firstWire is now the first wire number
+
+
+			//Get the second Number
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) == ' '))
+			{
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//At this point, we have removed all of the random spacing and should have only the wire numbers remaining (last 2)
+
+			theWireNumberString = "";
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) != ' '))
+			{
+				theWireNumberString = theWireNumberString + temporaryWorkingString.at(0);
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//Put the full wire number into a string called theWireNumberString
+
+			int secondWire;
+			stringstream theSecondWireStringStream(theWireNumberString);
+			theSecondWireStringStream >> secondWire;
+
+
+			//Get the third Number
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) == ' '))
+			{
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//At this point, we have removed all of the random spacing and should have only the wire numbers remaining (last 1)
+
+			theWireNumberString = "";
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) != ' '))
+			{
+				theWireNumberString = theWireNumberString + temporaryWorkingString.at(0);
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//Put the full wire number into a string called theWireNumberString
+
+			int thirdWire;
+			stringstream theThirdWireStringStream(theWireNumberString);
+			theThirdWireStringStream >> thirdWire;
+
+
 			if (c.doesNotExist(thirdWire)) {
 				wire* w = new wire(thirdWire);
 				c.makeExtraWire(w);
@@ -135,14 +244,93 @@ int main() {
 		thingToMake = (fileContents.at(i)).find("OR");			//If the current line has the keyword OR (OR gate, NOR gate, XOR gate, XNOR gate), do this
 		if (thingToMake != string::npos)
 		{
-			string tempString = (fileContents.at(i)).substr(6, 7);
-			int delayTime;
-			stringstream delayTimeStringStream(tempString);
-			delayTimeStringStream >> delayTime;
 
-			int firstWire = atoi(&(fileContents.at(i)).at(13));
-			int secondWire = atoi(&(fileContents.at(i)).at(17));
-			int thirdWire = atoi(&(fileContents.at(i)).at(21));
+			string temporaryWorkingString = fileContents.at(i);
+
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) != ' '))					//We dont care about the gate type for this part. Ignore it.
+			{
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) == ' '))
+			{
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);							//Remove those extra spaces after whatever the first word was.
+			}
+
+
+			string gateDelayTimeString = "";
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) != ' '))
+			{
+				gateDelayTimeString = gateDelayTimeString + temporaryWorkingString.at(0);
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//The string gateDelayTimeString at this point should be holding the time + the letters "ns"
+
+			stringstream delayTimeStringStream(gateDelayTimeString);
+
+			int delayTime;
+			delayTimeStringStream >> delayTime;							//We have taken the delayTime
+
+
+																		//Get the first number
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) == ' '))
+			{
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//At this point, we have removed all of the random spacing and should have only the wire numbers remaining.
+
+			string theWireNumberString = "";
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) != ' '))
+			{
+				theWireNumberString = theWireNumberString + temporaryWorkingString.at(0);
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//Put the full wire number into a string called theWireNumberString
+
+			int firstWire;
+			stringstream theFirstWireStringStream(theWireNumberString);
+			theFirstWireStringStream >> firstWire;								//firstWire is now the first wire number
+																				//Get the second Number
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) == ' '))
+			{
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//At this point, we have removed all of the random spacing and should have only the wire numbers remaining (last 2)
+
+			theWireNumberString = "";
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) != ' '))
+			{
+				theWireNumberString = theWireNumberString + temporaryWorkingString.at(0);
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//Put the full wire number into a string called theWireNumberString
+
+			int secondWire;
+			stringstream theSecondWireStringStream(theWireNumberString);
+			theSecondWireStringStream >> secondWire;
+
+
+			//Get the third Number
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) == ' '))
+			{
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//At this point, we have removed all of the random spacing and should have only the wire numbers remaining (last 1)
+
+			theWireNumberString = "";
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) != ' '))
+			{
+				theWireNumberString = theWireNumberString + temporaryWorkingString.at(0);
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//Put the full wire number into a string called theWireNumberString
+
+			int thirdWire;
+			stringstream theThirdWireStringStream(theWireNumberString);
+			theThirdWireStringStream >> thirdWire;
+
+
+
 			if (c.doesNotExist(thirdWire)) {
 				wire* w = new wire(thirdWire);
 				c.makeExtraWire(w);
@@ -180,13 +368,70 @@ int main() {
 		thingToMake = (fileContents.at(i)).find("NOT");			//If the current line has the keyword NOT, do this
 		if (thingToMake != string::npos)
 		{
-			string tempString = (fileContents.at(i)).substr(6, 7);
-			int delayTime;
-			stringstream delayTimeStringStream(tempString);
-			delayTimeStringStream >> delayTime;
+			string temporaryWorkingString = fileContents.at(i);
 
-			int firstWire = atoi(&(fileContents.at(i)).at(13));
-			int secondWire = atoi(&(fileContents.at(i)).at(17));
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) != ' '))					//We dont care about the gate type for this part. Ignore it.
+			{
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) == ' '))
+			{
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);							//Remove those extra spaces after whatever the first word was.
+			}
+
+
+			string gateDelayTimeString = "";
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) != ' '))
+			{
+				gateDelayTimeString = gateDelayTimeString + temporaryWorkingString.at(0);
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//The string gateDelayTimeString at this point should be holding the time + the letters "ns"
+
+			stringstream delayTimeStringStream(gateDelayTimeString);
+
+			int delayTime;
+			delayTimeStringStream >> delayTime;							//We have taken the delayTime
+
+
+																		//Get the first number
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) == ' '))
+			{
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//At this point, we have removed all of the random spacing and should have only the wire numbers remaining.
+
+			string theWireNumberString = "";
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) != ' '))
+			{
+				theWireNumberString = theWireNumberString + temporaryWorkingString.at(0);
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//Put the full wire number into a string called theWireNumberString
+
+			int firstWire;
+			stringstream theFirstWireStringStream(theWireNumberString);
+			theFirstWireStringStream >> firstWire;								//firstWire is now the first wire number
+																				//Get the second Number
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) == ' '))
+			{
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//At this point, we have removed all of the random spacing and should have only the wire numbers remaining (last 2)
+
+			theWireNumberString = "";
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) != ' '))
+			{
+				theWireNumberString = theWireNumberString + temporaryWorkingString.at(0);
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//Put the full wire number into a string called theWireNumberString
+
+			int secondWire;
+			stringstream theSecondWireStringStream(theWireNumberString);
+			theSecondWireStringStream >> secondWire;
+
 			if (c.doesNotExist(secondWire)) {
 				wire* w = new wire(secondWire);
 				c.makeExtraWire(w);
@@ -201,13 +446,70 @@ int main() {
 		thingToMake = (fileContents.at(i)).find("INVERT");			//If the current line has the keyword INVERT, do this
 		if (thingToMake != string::npos)
 		{
-			string tempString = (fileContents.at(i)).substr(6, 7);
-			int delayTime;
-			stringstream delayTimeStringStream(tempString);
-			delayTimeStringStream >> delayTime;
+			string temporaryWorkingString = fileContents.at(i);
 
-			int firstWire = atoi(&(fileContents.at(i)).at(13));
-			int secondWire = atoi(&(fileContents.at(i)).at(17));
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) != ' '))					//We dont care about the gate type for this part. Ignore it.
+			{
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) == ' '))
+			{
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);							//Remove those extra spaces after whatever the first word was.
+			}
+
+
+			string gateDelayTimeString = "";
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) != ' '))
+			{
+				gateDelayTimeString = gateDelayTimeString + temporaryWorkingString.at(0);
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//The string gateDelayTimeString at this point should be holding the time + the letters "ns"
+
+			stringstream delayTimeStringStream(gateDelayTimeString);
+
+			int delayTime;
+			delayTimeStringStream >> delayTime;							//We have taken the delayTime
+
+
+																		//Get the first number
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) == ' '))
+			{
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//At this point, we have removed all of the random spacing and should have only the wire numbers remaining.
+
+			string theWireNumberString = "";
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) != ' '))
+			{
+				theWireNumberString = theWireNumberString + temporaryWorkingString.at(0);
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//Put the full wire number into a string called theWireNumberString
+
+			int firstWire;
+			stringstream theFirstWireStringStream(theWireNumberString);
+			theFirstWireStringStream >> firstWire;								//firstWire is now the first wire number
+																				//Get the second Number
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) == ' '))
+			{
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//At this point, we have removed all of the random spacing and should have only the wire numbers remaining (last 2)
+
+			theWireNumberString = "";
+			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) != ' '))
+			{
+				theWireNumberString = theWireNumberString + temporaryWorkingString.at(0);
+				temporaryWorkingString = temporaryWorkingString.substr(1, string::npos);
+			}
+			//Put the full wire number into a string called theWireNumberString
+
+			int secondWire;
+			stringstream theSecondWireStringStream(theWireNumberString);
+			theSecondWireStringStream >> secondWire;
+
 			if (c.doesNotExist(secondWire)) {
 				wire* w = new wire(secondWire);
 				c.makeExtraWire(w);
@@ -276,16 +578,12 @@ int main() {
 
 			cout << "The wireTimeValue is " << wireTime << endl;
 			
-			q.push(c.makeEvent(c.getWire(wireName), wireTime, c.setWireValue(state)));		//here						//At this point, we have everything we need from each line of the vector file. We just need to make the gates and add them to however we are going to add them.
+			c.makeEvent(c.getWire(wireName), wireTime, c.setWireValue(state));		//here						//At this point, we have everything we need from each line of the vector file. We just need to make the gates and add them to however we are going to add them.
 
 			cout << "event added" << endl;
 		}
 	}
-	while (!q.empty()) {
-		event tempEvent = q.top();
-		cout << tempEvent.getTime() << endl;
-		q.pop();
-	}
+	c.simulate();
 	return 0;
 }
 
