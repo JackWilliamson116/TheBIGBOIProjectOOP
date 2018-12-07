@@ -22,6 +22,8 @@ int main() {
 	cout << "Enter the circuit file name: ";
 	cin >> fileName;												//Takes what the user inputs and setes it to the string fileName
 
+	fileName = fileName + ".txt";
+
 	ifstream testStream(fileName);					//Creates an ifstream called testStream
 	vector<string> fileContents;						//A vector that will hold each line of the text file
 
@@ -86,14 +88,13 @@ int main() {
 			int tempWireNum;
 			wireNumberStringStream >> tempWireNum;
 
-			//JACK - wirecharacter is now a string...
-			/*if (c.doesNotExist(tempWireNum))										//if the wire does not already exist
+			if (c.doesNotExist(tempWireNum))										//if the wire does not already exist
 			{
 				wire* w = new wire(tempWireNum);									//create the wire
-				cout << tempWireNum << " wire created " << wireCharacter << endl;
-				c.insertWire(wireCharacter, w);										//then add it to the map
+				cout << tempWireNum << " wire created " << nameOfTheWire << endl;
+				c.insertWire(nameOfTheWire, w);										//then add it to the map
 				cout << "wire added to map " << endl;
-			}*/
+			}
 
 		}
 
@@ -127,12 +128,12 @@ int main() {
 			wireNumberStringStream >> tempWireNum;
 
 			//JACK - wirecharacter is now a string...
-			/*if (c.doesNotExist(tempWireNum)) {
+			if (c.doesNotExist(tempWireNum)) {
 				wire* w = new wire(tempWireNum);
-				cout << tempWireNum << " wire created" << wireCharacter << endl;
-				c.insertWire(wireCharacter, w);
+				cout << tempWireNum << " wire created" << nameOfTheWire << endl;
+				c.insertWire(nameOfTheWire, w);
 				cout << "wire added to map" << endl;
-			}*/
+			}
 
 		}
 
@@ -229,13 +230,14 @@ int main() {
 			if ((fileContents.at(i)).at(0) == 'N')			//NAND gate
 			{
 				cout << "NAND DETECTED" << endl;
+				cout << "in1: " << firstWire << " in2: " << secondWire << " in3: " << thirdWire << endl;
 				c.createGateConnection(c.getWire(firstWire), c.getWire(secondWire), c.getWire(thirdWire), delayTime, NAND);
 
 			}
 			else											//AND gate
 			{
 				cout << "AND DETECTED" << endl;
-
+				cout << "in1: " << firstWire << " in2: " << secondWire << " in3: " << thirdWire << endl;
 				c.createGateConnection(c.getWire(firstWire), c.getWire(secondWire), c.getWire(thirdWire), delayTime, AND);
 			}
 
@@ -342,11 +344,13 @@ int main() {
 				if ((fileContents.at(i)).at(1) == 'N')			//XNOR gate
 				{
 					cout << "XNOR DETECTED" << endl;
+					cout << "in1: " << firstWire << " in2: " << secondWire << " in3: " << thirdWire << endl;
 					c.createGateConnection(c.getWire(firstWire), c.getWire(secondWire), c.getWire(thirdWire), delayTime, XNOR);
 				}
 				else											//XOR gate
 				{
 					cout << "XOR DETECTED" << endl;
+					cout << "in1: " << firstWire << " in2: " << secondWire << " in3: " << thirdWire << endl;
 					c.createGateConnection(c.getWire(firstWire), c.getWire(secondWire), c.getWire(thirdWire), delayTime, XOR);
 				}
 			}
@@ -355,11 +359,13 @@ int main() {
 				if ((fileContents.at(i)).at(0) == 'N')			//NOR gate
 				{
 					cout << "NOR DETECTED" << endl;
+					cout << "in1: " << firstWire << " in2: " << secondWire << " in3: " << thirdWire << endl;
 					c.createGateConnection(c.getWire(firstWire), c.getWire(secondWire), c.getWire(thirdWire), delayTime, NOR);
 				}
 				else											//OR gate
 				{
 					cout << "OR DETECTED" << endl;
+					cout << "in1: " << firstWire << " in2: " << secondWire << " in3: " << thirdWire << endl;
 					c.createGateConnection(c.getWire(firstWire), c.getWire(secondWire), c.getWire(thirdWire), delayTime, OR);
 				}
 			}
@@ -440,7 +446,7 @@ int main() {
 			//Note that there is NOT a third wire because a NOT gate only takes in 2 wires...
 
 			cout << "NOT DETECTED" << endl;
-			c.createGateConnection(c.getWire(firstWire), c.getWire(firstWire), c.getWire(secondWire), delayTime, NAND);
+			c.createGateConnection(c.getWire(firstWire), c.getWire(firstWire), c.getWire(secondWire), delayTime, NOT);
 		}
 
 		thingToMake = (fileContents.at(i)).find("INVERT");			//If the current line has the keyword INVERT, do this
@@ -518,7 +524,7 @@ int main() {
 			//Note that there is NOT a third wire because a NOT gate only takes in 2 wires...
 
 			cout << "INVERT DETECTED" << endl;
-			c.createGateConnection(c.getWire(firstWire), c.getWire(firstWire), c.getWire(secondWire), delayTime, NAND);
+			c.createGateConnection(c.getWire(firstWire), c.getWire(firstWire), c.getWire(secondWire), delayTime, NOT);
 		}
 	}
 	//At this point, all wire and gate objects should have been created.
@@ -561,7 +567,7 @@ int main() {
 			cout << "Iteration number is " << i << endl;
 
 			//wireName = (vectorContents.at(i)).at(6);
-			string temporaryWorkingString = fileContents.at(i);
+			string temporaryWorkingString = vectorContents.at(i);
 
 			while ((temporaryWorkingString.length() != 0) && (temporaryWorkingString.at(0) != ' '))					//We dont care about the gate type for this part. Ignore it.
 			{
@@ -607,7 +613,8 @@ int main() {
 
 			
 
-			state = (vectorContents.at(i)).at((vectorContents.at(i)).size() - 1);					//This little bundle of confusion gets the last character in the line to determine the wire state.
+			//state = (vectorContents.at(i)).at((vectorContents.at(i)).size() - 1);					//This little bundle of confusion gets the last character in the line to determine the wire state.
+
 
 			string timeAndStateString = (vectorContents.at(i)).substr(8, 2);							//We are creating a string that contains only the time portion of the original string.
 
@@ -619,12 +626,14 @@ int main() {
 
 			cout << "The wireTimeValue is " << wireTime << endl;
 			
-			//c.makeEvent(c.getWire(wireName), wireTime, c.setWireValue(state));		//here						//At this point, we have everything we need from each line of the vector file. We just need to make the gates and add them to however we are going to add them.
+			c.makeEvent(c.getWire(wireName), wireTime, c.setWireValue(state));		//here						//At this point, we have everything we need from each line of the vector file. We just need to make the gates and add them to however we are going to add them.
 
-			cout << "event added" << endl;
+			cout << "event added wireValue " << state << endl;
 		}
 	}
 	c.simulate();
+	cout << "A: ";
+	c.getWire("A")->print(c.getFinalTime());
 	return 0;
 }
 

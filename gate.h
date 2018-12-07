@@ -10,6 +10,7 @@ public:
 	wireValue eval();
 	void setDelay(int del);
 	int getDelay();
+	wire* getOUT(){return out;}
 protected:
 	wire* in1;
 	wire* in2;

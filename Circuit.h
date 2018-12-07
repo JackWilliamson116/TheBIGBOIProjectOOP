@@ -3,27 +3,33 @@
 #include <map>
 #include "wire.h"
 #include "gate.h"
+#include <iomanip>
+#include <ctime>
+#include <queue>
 
 using namespace std;
 class event;
 class circuit {
 public:
-	void insertWire(char c, wire* w1);
+	void insertWire(string c, wire* w1);
 	wire* getWire(int wnum);
-	wire* getWire(char wnam);
+	wire* getWire(string wnam);
 	bool doesNotExist(int wnum);
 	void createGateConnection(wire* in1, wire* in2, wire* out, int delay, gateType type);
 	event makeEvent(wire* w1, int time, wireValue val);
 	wireValue setWireValue(char c);
-	int eWC() { return extrawirecount++; }
 	void makeExtraWire(wire* w1);
-	
+	void simulate();
+	priority_queue<event> getQ() { return q; }
+	int getFinalTime() { return finalTime; }
 private:
-	map<char, wire*> wireMap;
+	map<string, wire*> wireMap;
 	int pqTB = 0;
 	//map<char, wire*>::iterator it;
-	int extrawirecount = 1;
 	vector<wire*> wv;
+	int time = 0;
+	priority_queue<event> q;
+	int finalTime;
 };
 
 class event {

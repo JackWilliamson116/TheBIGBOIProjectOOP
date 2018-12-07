@@ -11,6 +11,7 @@ wireValue gate::eval() {
 				if (in1->getState() == high) {
 					return high;
 				}
+				return low;
 			}
 			else {
 				return low;
@@ -30,11 +31,17 @@ wireValue gate::eval() {
 				if (in1->getState() == unknown) {
 					return unknown;
 				}
-				if (in1->getState() == low) {
+				else if (in1->getState() == low) {
 					return low;
 				}
+				return high;
 			}
-			return high;
+			if (in1->getState() == high || in2->getState() == high) {
+				return high;
+			}
+			else {
+				return unknown;
+			}
 		case NOR:
 			if (in1->getState() == unknown || in2->getState() == unknown) {
 				return unknown;
